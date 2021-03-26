@@ -1,0 +1,19 @@
+---
+- hosts: localhost
+  vars:
+  - container_name: "firstContainer"
+    image_name: "ssh-centos:v1"
+
+  tasks:
+  - docker_container:
+      name: "{{ container_name }}"
+      image: "{{ image_name }}"
+      state: started
+    register: container_info
+
+  - lineinfile:
+      path: inventory
+      insertafter: '^\[container]'
+      firstmatch: yes
+      line: "{{ container_info.ansible_facts.docker_container.NetworkSettings.IPAddress }}"
+      state: present

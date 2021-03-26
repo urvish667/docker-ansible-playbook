@@ -1,0 +1,21 @@
+---
+- hosts: container
+  vars:
+    - document_root: "/var/www/html"
+
+  tasks:
+  - name: Installing the httpd
+    package:
+      name: httpd
+      state: present
+
+  - name: Content for web
+    copy:
+      dest: "{{ document_root }}/index.html"
+      content: "Automation with ansible!!!"
+    register: result
+
+  - name: Starting httpd service
+    command: "/usr/sbin/httpd"
+    when: result.changed == "true"
+    
